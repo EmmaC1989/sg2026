@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#F5F5F5">
+    <title>SG 2026 閨蜜旅</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --text-main: #333333;
+            --text-sub: #666666;
+            --accent: #A67B5B;
+            --line-green: #06C755;
+            --border: 1px solid #E0E0E0;
+            --radius: 8px;
+            --tag-alert-bg: #FFEBEE;
+            --tag-alert-text: #D32F2F;
+            --tag-info-bg: #F0F0F0;
+            --tag-info-text: #555555;
+            --tag-backup-bg: #E3F2FD;
+            --tag-backup-text: #1565C0;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0; padding: 0; padding-bottom: 90px;
+        }
+
+        .header {
+            background-color: var(--bg-color); padding: 20px 20px 10px;
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+        h1 { font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--text-main); }
+
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; border: var(--border); }
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--accent); display: flex; align-items: center; gap: 8px;}
+
+        .tab-content { display: none; padding: 15px 16px; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 行程樣式 */
+        .day-label { display: inline-block; background: var(--accent); color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; margin: 20px 0 10px; font-weight: 500; }
+        
+        /* 修改 .it-item 為 div 並增加 cursor pointer */
+        .it-item { display: flex; gap: 15px; margin-bottom: 20px; text-decoration: none; color: inherit; align-items: flex-start; cursor: pointer; transition: opacity 0.2s; }
+        .it-item:active { opacity: 0.7; }
+        
+        .it-time { font-family: 'Courier New', monospace; font-weight: 600; font-size: 0.9rem; color: var(--text-sub); min-width: 45px; padding-top: 2px; }
+        .it-body { flex: 1; padding-bottom: 16px; border-bottom: 1px dashed #EEE; }
+        .it-item:last-child .it-body { border-bottom: none; }
+        .it-title { font-weight: 700; margin-bottom: 4px; font-size: 1rem; display: flex; justify-content: space-between;}
+        /* 增加一個箭頭指示可以點擊 */
+        .it-title::after { content: '\f05a'; font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 0.9rem; color: #CCC; }
+        
+        .it-desc { font-size: 0.85rem; color: var(--text-sub); margin-bottom: 6px; }
+        
+        /* 標籤樣式 */
+        .tags-row { display: flex; flex-wrap: wrap; gap: 6px; }
+        .tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 500; }
+        .tag-alert { background: var(--tag-alert-bg); color: var(--tag-alert-text); }
+        .tag-info { background: var(--tag-info-bg); color: var(--tag-info-text); }
+        .tag-backup { background: var(--tag-backup-bg); color: var(--tag-backup-text); }
+
+        /* 分帳與底部導航 */
+        .btn-line {
+            background-color: var(--line-green); color: white;
+            width: 100%; padding: 15px; border-radius: 8px;
+            font-weight: 700; font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            text-decoration: none; border: none; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(6, 199, 85, 0.2);
+        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #FFFFFF; border-top: 1px solid #E0E0E0; display: flex; justify-content: space-around; padding: 8px 0 24px; z-index: 1000; }
+        .nav-item { text-align: center; color: #CCC; font-size: 0.65rem; cursor: pointer; width: 20%; padding-top: 4px; }
+        .nav-item i { display: block; font-size: 1.2rem; margin-bottom: 2px; }
+        .nav-item.active { color: var(--accent); }
+
+        /* --- Modal 彈窗樣式 --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000;
+            display: none; align-items: flex-end; /* 手機版從下方滑出 */
+            justify-content: center;
+        }
+        .modal-overlay.show { display: flex; animation: slideUp 0.3s ease; }
+        
+        .modal-card {
+            background: white; width: 100%; max-width: 600px;
+            border-radius: 16px 16px 0 0; padding: 25px;
+            max-height: 85vh; overflow-y: auto;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+        }
+        @media(min-width: 600px) {
+            .modal-overlay { align-items: center; }
+            .modal-card { border-radius: 12px; width: 90%; }
+        }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .modal-title { font-size: 1.3rem; font-weight: 700; color: var(--text-main); }
+        .btn-close { background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer; padding: 0 5px; }
+        
+        .modal-section { margin-bottom: 20px; }
+        .modal-subtitle { font-size: 0.9rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .modal-text { font-size: 0.95rem; line-height: 1.6; color: #444; }
+        
+        .modal-btn-map {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; padding: 12px; background: #F0F0F0; color: #333;
+            border-radius: 8px; text-decoration: none; font-weight: 600;
+            margin-top: 10px; border: 1px solid #DDD;
+        }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        /* 修正：準備清單專用樣式 */
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F0F0;
+            cursor: pointer;
+        }
+        .check-item:last-child { border-bottom: none; }
+        
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #DDD;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            transition: all 0.2s;
+        }
+        
+        .check-item.checked .checkbox {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+        
+        .check-item.checked span {
+            color: #AAA;
+            text-decoration: line-through;
+        }
+        
+        
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1 id="page-title">行程</h1>
+    </header>
+
+    <div id="tab-itinerary" class="tab-content active">
+        <div class="day-label">Day 1 • 2/14 (六) 情人節</div>
+        <div class="weather-bar">
+        <i class="fa-solid fa-cloud-sun"></i>
+        <span>多雲時晴（午後局部陣雨）</span>
+        <span class="temp-high">32°C</span> / <span class="temp-low">26°C</span>
+        <span style="margin-left:auto; font-size: 0.7rem; color: var(--text-sub);">30%</span>
+    </div>
+        <div class="card">
+            <div class="it-item" onclick="openModal('changi')">
+                <div class="it-time">13:25</div>
+                <div class="it-body">
+                    <div class="it-title">抵達樟宜 T2</div>
+                    <div class="it-desc">Check-in Amara Hotel</div>
+                    <div class="tags-row"><span class="tag tag-info">填寫 Arrival Card</span><span class="tag tag-alert">🚗 Grab 往飯店</span></div>
+                </div>
+            </div>
+            
+            <div class="it-item" onclick="openModal('hotel_rest')">
+                <div class="it-time">15:00</div>
+                <div class="it-body">
+                    <div class="it-title">飯店休息 / 梳洗</div>
+                    <div class="it-desc">準備美美的去吃情人節晚餐</div>
+                </div>
+            </div>
+
+            <div class="it-item" onclick="openModal('jumbo')">
+                <div class="it-time">18:00</div>
+                <div class="it-body">
+                    <div class="it-title">JUMBO 珍寶海鮮</div>
+                    <div class="it-desc">The Riverwalk 分店</div>
+                    <div class="tags-row"><span class="tag tag-alert">⚠️ 務必預訂這家</span><span class="tag tag-info">辣椒蟹</span></div>
+                </div>
+            </div>
+
+            <div class="it-item" onclick="openModal('merlion')">
+                <div class="it-time">20:00</div>
+                <div class="it-body">
+                    <div class="it-title">魚尾獅公園 Merlion</div>
+                    <div class="it-desc">河畔散步看金沙燈光秀</div>
+                    <div class="tags-row"><span class="tag tag-info">經典必拍</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="day-label">Day 2 • 2/15 (日)</div>
+        <div class="weather-bar">
+    <i class="fa-solid fa-sun"></i>
+    <span>晴朗（紫外線強，注意防曬）</span>
+    <span class="temp-high">33°C</span> / <span class="temp-low">26°C</span>
+    <span style="margin-left:auto; font-size: 0.7rem; color: var(--text-sub);">降雨機率 10%</span>
+</div>
+        <div class="card">
+            <div class="it-item" onclick="openModal('maxwell')">
+                <div class="it-time">09:30</div>
+                <div class="it-body">
+                    <div class="it-title">Maxwell 熟食中心</div>
+                    <div class="it-desc">真真粥品 / 天天海南雞飯</div>
+                    <div class="tags-row"><span class="tag tag-alert">💵 只收現金</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('chinatown')">
+                <div class="it-time">10:30</div>
+                <div class="it-body">
+                    <div class="it-title">佛牙寺 & 牛車水</div>
+                    <div class="it-desc">唐代建築與年貨街</div>
+                    <div class="tags-row"><span class="tag tag-info">深度遊</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('songfa')">
+                <div class="it-time">12:30</div>
+                <div class="it-body">
+                    <div class="it-title">松發肉骨茶</div>
+                    <div class="it-desc">Chinatown Point 分店</div>
+                    <div class="tags-row"><span class="tag tag-info">地鐵站樓上</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('gardens')">
+                <div class="it-time">14:00</div>
+                <div class="it-body">
+                    <div class="it-title">濱海灣花園 (冷氣區)</div>
+                    <div class="it-desc">Cloud Forest + Flower Dome</div>
+                    <div class="tags-row"><span class="tag tag-info">慢慢逛3小時</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('mbs')">
+                <div class="it-time">17:00</div>
+                <div class="it-body">
+                    <div class="it-title">金沙商場 MBS</div>
+                    <div class="it-desc">Bacha Coffee / Apple</div>
+                    <div class="tags-row"><span class="tag tag-info">下午茶</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('supertree')">
+                <div class="it-time">19:45</div>
+                <div class="it-body">
+                    <div class="it-title">天空樹燈光秀</div>
+                    <div class="it-desc">Garden Rhapsody</div>
+                    <div class="tags-row"><span class="tag tag-info">免費觀賞</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('laupasat')">
+                <div class="it-time">20:30</div>
+                <div class="it-body">
+                    <div class="it-title">老巴剎 Lau Pa Sat</div>
+                    <div class="it-desc">戶外沙嗲街 Satay Street</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="day-label">Day 3 • 2/16 (一) 除夕</div>
+        <div class="weather-bar">
+    <i class="fa-solid fa-cloud-showers-heavy"></i>
+    <span>午後雷陣雨（建議備傘）</span>
+    <span class="temp-high">31°C</span> / <span class="temp-low">25°C</span>
+    <span style="margin-left:auto; font-size: 0.7rem; color: var(--text-sub);">降雨機率 60%</span>
+</div>
+        <div class="card">
+            <div class="it-item" onclick="openModal('uss')">
+                <div class="it-time">10:00</div>
+                <div class="it-body">
+                    <div class="it-title">聖淘沙名勝世界</div>
+                    <div class="it-desc">環球影城 USS</div>
+                    <div class="tags-row"><span class="tag tag-alert">需提前購票</span><span class="tag tag-info">11:00 開園</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('dancing_crab')">
+                <div class="it-time">18:30</div>
+                <div class="it-body">
+                    <div class="it-title">Dancing Crab 年夜飯</div>
+                    <div class="it-desc">VivoCity 3F | 手抓海鮮</div>
+                    <div class="tags-row"><span class="tag tag-alert">⚠️ 小年夜需訂位</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="day-label">Day 4 • 2/17 (二) 初一</div>
+        <div class="weather-bar">
+    <i class="fa-solid fa-cloud"></i>
+    <span>多雲偶陣雨（天氣較涼爽）</span>
+    <span class="temp-high">30°C</span> / <span class="temp-low">25°C</span>
+    <span style="margin-left:auto; font-size: 0.7rem; color: var(--text-sub);">降雨機率 40%</span>
+</div>
+        <div class="card">
+            <div class="it-item" onclick="openModal('sea')">
+                <div class="it-time">10:00</div>
+                <div class="it-body">
+                    <div class="it-title">S.E.A. 海洋館</div>
+                    <div class="it-desc">冷氣行程看鯊魚</div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('rws_lunch')">
+                <div class="it-time">13:00</div>
+                <div class="it-body">
+                    <div class="it-title">聖淘沙午餐</div>
+                    <div class="it-desc">鼎泰豐 / 馬來西亞美食街</div>
+                    <div class="tags-row"><span class="tag tag-info">吃完即離開</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('chijmes')">
+                <div class="it-time">14:30</div>
+                <div class="it-body">
+                    <div class="it-title">CHIJMES 贊美廣場</div>
+                    <div class="it-desc">哥德式白色教堂與迴廊</div>
+                    <div class="tags-row"><span class="tag tag-info">網美拍照</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('raffles')">
+                <div class="it-time">15:30</div>
+                <div class="it-body">
+                    <div class="it-title">萊佛士酒店 Raffles</div>
+                    <div class="it-desc">殖民風建築 / Long Bar</div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('flyer')">
+                <div class="it-time">17:00</div>
+                <div class="it-body">
+                    <div class="it-title">新加坡摩天輪 Flyer</div>
+                    <div class="it-desc">30分鐘高空冷氣觀景</div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('korean')">
+                <div class="it-time">19:00</div>
+                <div class="it-body">
+                    <div class="it-title">韓式料理街</div>
+                    <div class="it-desc">Tanjong Pagar (O.BBa Jjajang)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="day-label">Day 5 • 2/18 (三)</div>
+        <div class="weather-bar">
+    <i class="fa-solid fa-cloud-sun"></i>
+    <span>局部多雲（適合室內行程）</span>
+    <span class="temp-high">31°C</span> / <span class="temp-low">26°C</span>
+    <span style="margin-left:auto; font-size: 0.7rem; color: var(--text-sub);">降雨機率 20%</span>
+</div>
+        <div class="card">
+            <div class="it-item" onclick="openModal('checkout')">
+                <div class="it-time">11:30</div>
+                <div class="it-body">
+                    <div class="it-title">退房 & 叫車</div>
+                    <div class="it-desc">Amara Hotel -> Changi Airport</div>
+                    <div class="tags-row"><span class="tag tag-alert">🚗 搭 Grab</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('jewel')">
+                <div class="it-time">12:00</div>
+                <div class="it-body">
+                    <div class="it-title">星耀樟宜 Jewel</div>
+                    <div class="it-desc">雨漩渦 & Shake Shack</div>
+                </div>
+            </div>
+        </div>
+        <div style="height: 20px;"></div>
+    </div>
+
+    <div id="tab-backup" class="tab-content">
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-star"></i> 彈性備選行程</div>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:15px;">行程太累或有空檔時，可以隨時補上這些點！</p>
+            <div class="it-item" onclick="openModal('yakun')">
+                <div class="it-time"><i class="fa-solid fa-mug-hot"></i></div>
+                <div class="it-body">
+                    <div class="it-title">亞坤咖椰吐司</div>
+                    <div class="it-desc">備選早餐/點心</div>
+                    <div class="tags-row"><span class="tag tag-alert">⚠️ 初一休息</span></div>
+                </div>
+            </div>
+            <div class="it-item" onclick="openModal('jigger')">
+                <div class="it-time"><i class="fa-solid fa-martini-glass"></i></div>
+                <div class="it-body">
+                    <div class="it-title">Jigger & Pony</div>
+                    <div class="it-desc">飯店樓下亞洲 Top 50 酒吧</div>
+                    <div class="tags-row"><span class="tag tag-alert">需訂位</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-split" class="tab-content">
+        <div class="card" style="text-align: center; padding: 30px 20px;">
+            <div style="font-size: 3rem; color: var(--line-green); margin-bottom: 15px;"><i class="fa-brands fa-line"></i></div>
+            <h2 style="margin: 0 0 10px 0;">LightSplit 分帳</h2>
+            <a id="line-btn" href="https://line.me/R/" class="btn-line" target="_blank"><i class="fa-solid fa-share-from-square"></i> 開啟 LINE App</a>
+            <div style="margin-top: 20px; text-align: left; border-top: 1px dashed #DDD; padding-top:15px;">
+                <input type="text" id="group-link-input" class="line-link-input" placeholder="貼上群組邀請連結">
+                <button onclick="updateLineLink()" style="background:#EEE; border:none; padding:5px 10px; border-radius:4px; color:#555; font-size:0.8rem;">設定連結</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="tab-checklist" class="tab-content"></div>
+    
+    <div id="tab-info" class="tab-content">
+        <div class="card"><div class="card-title"><i class="fa-solid fa-plane"></i> 航班</div><p style="margin:5px 0; color:#555;">星宇 JX771 (08:10 - 13:00)</p><p style="margin:5px 0; color:#555;">星宇 JX772 (14:45 - 19:30)</p></div>
+        <div class="card"><div class="card-title"><i class="fa-solid fa-hotel"></i> 住宿</div><strong style="display:block; margin-bottom:5px;">Amara Singapore</strong><p style="margin:0; font-size:0.9rem; color:#777;">165 Tanjong Pagar Rd</p></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('itinerary')"><i class="fa-regular fa-calendar-days"></i><span>行程</span></div>
+        <div class="nav-item" onclick="switchTab('backup')"><i class="fa-solid fa-star"></i><span>備選</span></div>
+        <div class="nav-item" onclick="switchTab('split')"><i class="fa-brands fa-line" style="font-weight: 700;"></i><span>分帳</span></div>
+        <div class="nav-item" onclick="switchTab('checklist')"><i class="fa-solid fa-clipboard-check"></i><span>準備</span></div>
+        <div class="nav-item" onclick="switchTab('info')"><i class="fa-solid fa-circle-info"></i><span>資訊</span></div>
+    </nav>
+
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title" id="m-title">標題</div>
+                <button class="btn-close" onclick="closeModal()">×</button>
+            </div>
+            
+            <div class="modal-section">
+                <div class="modal-subtitle"><i class="fa-solid fa-circle-info"></i> 介紹</div>
+                <div class="modal-text" id="m-desc">內容介紹...</div>
+            </div>
+
+            <div class="modal-section">
+                <div class="modal-subtitle"><i class="fa-solid fa-route"></i> 交通 / 動線</div>
+                <div class="modal-text" id="m-transit">交通方式...</div>
+            </div>
+
+            <a href="#" target="_blank" id="m-map-btn" class="modal-btn-map">
+                <i class="fa-solid fa-map-location-dot"></i> Google Maps
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // --- 景點資料庫 (包含介紹與交通) ---
+        const places = {
+    // Day 1
+    'changi': {
+        title: '新加坡樟宜機場 (SIN)',
+        desc: '全球最佳機場，T2 有數位瀑布與空中花園。',
+        transit: '入境後跟隨 Taxi 指標前往 B1 接送區。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Changi+Airport+Singapore'
+    },
+    'hotel_rest': {
+        title: 'Amara Singapore (飯店)',
+        desc: '位於 Tanjong Pagar 的住宿點，交通便利。',
+        transit: 'Grab 叫車或步行至地鐵站。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Amara+Singapore+Hotel'
+    },
+    'jumbo': {
+        title: 'JUMBO Seafood (The Riverwalk)',
+        desc: '經典辣椒螃蟹名店。',
+        transit: '從飯店搭 Grab 約 10-12 分鐘。',
+        map: 'https://www.google.com/maps/search/?api=1&query=JUMBO+Seafood+The+Riverwalk'
+    },
+    'merlion': {
+        title: '魚尾獅公園 Merlion Park',
+        desc: '新加坡必拍地標。',
+        transit: '從珍寶海鮮步行約 10 分鐘即達。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Merlion+Park'
+    },
+
+    // Day 2
+    'maxwell': {
+        title: 'Maxwell Food Centre',
+        desc: '天天海南雞飯與真真粥品。',
+        transit: '從飯店步行約 8 分鐘。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Maxwell+Food+Centre'
+    },
+    'chinatown': {
+        title: '新加坡佛牙寺龍華院',
+        desc: '唐代風格建築，有冷氣可休息。',
+        transit: '就在 Maxwell 對面。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Buddha+Tooth+Relic+Temple'
+    },
+    'songfa': {
+        title: '松發肉骨茶 (Chinatown Point)',
+        desc: '潮州式胡椒肉骨茶。',
+        transit: '地鐵牛車水站 E 出口旁。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Song+Fa+Bak+Kut+Teh+Chinatown+Point'
+    },
+    'gardens': {
+        title: '濱海灣花園 Gardens by the Bay',
+        desc: '雲霧林 Cloud Forest 與花穹 Flower Dome。',
+        transit: '搭地鐵藍線至 Bayfront 站。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Gardens+by+the+Bay'
+    },
+    'mbs': {
+        title: '金沙商場 The Shoppes at MBS',
+        desc: '精品購物與 Bacha Coffee。',
+        transit: '從花園通過空橋即達。',
+        map: 'https://www.google.com/maps/search/?api=1&query=The+Shoppes+at+Marina+Bay+Sands'
+    },
+
+    // Day 3
+    'uss': {
+        title: '新加坡環球影城 USS',
+        desc: '聖淘沙熱門主題樂園。',
+        transit: 'Grab 直達地下 B1 接送區。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Universal+Studios+Singapore'
+    },
+    'dancing_crab': {
+        title: 'Dancing Crab (VivoCity)',
+        desc: '手抓海鮮除夕聚餐。',
+        transit: '從聖淘沙搭輕軌回 VivoCity 3 樓。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Dancing+Crab+VivoCity'
+    },
+
+    // Day 4
+    'sea': {
+        title: 'S.E.A. 海洋館',
+        desc: '全球最大海洋館之一。',
+        transit: '聖淘沙名勝世界內，Grab 可直達。',
+        map: 'https://www.google.com/maps/search/?api=1&query=S.E.A.+Aquarium'
+    },
+    'rws_lunch': {
+        title: '馬來西亞美食街 (RWS)',
+        desc: '聖淘沙內的平價午餐選擇。',
+        transit: '海洋館出口步行即達。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Malaysian+Food+Street+RWS'
+    },
+    'chijmes': {
+        title: '贊美廣場 CHIJMES',
+        desc: '白色歌德式教堂建築，熱門拍照點。',
+        transit: '搭地鐵至 City Hall 站。',
+        map: 'https://www.google.com/maps/search/?api=1&query=CHIJMES'
+    },
+
+    // Day 5
+    'jewel': {
+        title: '星耀樟宜 Jewel Changi',
+        desc: '雨漩渦瀑布 Rain Vortex。',
+        transit: '位於機場航廈核心區。',
+        map: 'https://www.google.com/maps/search/?api=1&query=Jewel+Changi+Airport'
+    }
+};
+
+        // --- 功能邏輯 ---
+        function openModal(id) {
+            const data = places[id];
+            if(!data) return;
+
+            document.getElementById('m-title').innerText = data.title;
+            document.getElementById('m-desc').innerText = data.desc;
+            document.getElementById('m-transit').innerText = data.transit;
+            document.getElementById('m-map-btn').href = data.map;
+            
+            document.getElementById('modal-overlay').classList.add('show');
+        }
+
+        function closeModal(event) {
+            if (event && event.target !== document.getElementById('modal-overlay') && event.target.className !== 'btn-close') return;
+            document.getElementById('modal-overlay').classList.remove('show');
+        }
+
+        const CHECK_KEY = 'sg_check_line_v2';
+        const LINK_KEY = 'sg_line_link';
+        let checklistState = {};
+
+        const checkData = {
+            "🪪 證件": ["護照", "SG Arrival Card", "網卡/漫遊", "信用卡 (高回饋)", "新幣現金"],
+            "🛡 保險": ["旅遊平安險", "海外突發疾病醫療險", "不便險 (航班延誤)"], // 新增項目
+            "👕 衣物": ["薄外套 (冷氣房)", "好走的鞋", "夏裝 x4", "泳衣", "遮陽帽"],
+            "🔌 電子": ["英式轉接頭", "行動電源", "充電線", "腳架/自拍棒"],
+            "💊 藥品": ["腸胃藥", "止痛藥", "暈車藥", "OK繃"]
+        };
+
+        window.onload = function() {
+            const storedCheck = localStorage.getItem(CHECK_KEY);
+            checklistState = storedCheck ? JSON.parse(storedCheck) : {};
+            renderChecklist();
+
+            const savedLink = localStorage.getItem(LINK_KEY);
+            if (savedLink) {
+                document.getElementById('line-btn').href = savedLink;
+                document.getElementById('group-link-input').value = savedLink;
+            }
+        };
+
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const map = {'itinerary':0, 'backup':1, 'split':2, 'checklist':3, 'info':4};
+            document.querySelectorAll('.nav-item')[map[tabId]].classList.add('active');
+            
+            const titles = { itinerary: '行程', backup: '備選', split: '分帳', checklist: '準備', info: '資訊' };
+            document.getElementById('page-title').innerText = titles[tabId];
+        }
+
+        window.updateLineLink = function() {
+            const inputVal = document.getElementById('group-link-input').value;
+            if (inputVal && inputVal.includes('line.me')) {
+                document.getElementById('line-btn').href = inputVal;
+                localStorage.setItem(LINK_KEY, inputVal);
+                alert('連結已儲存！');
+            } else {
+                alert('請輸入有效的 LINE 連結');
+            }
+        }
+
+        function renderChecklist() {
+            const container = document.getElementById('tab-checklist');
+            container.innerHTML = '';
+            for (const [cat, items] of Object.entries(checkData)) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.padding = '0 16px'; 
+                const title = document.createElement('div');
+                title.className = 'card-title';
+                title.style.marginTop = '16px';
+                title.innerText = cat;
+                card.appendChild(title);
+                items.forEach(item => {
+                    const isChecked = checklistState[item];
+                    const row = document.createElement('div');
+                    row.className = `check-item ${isChecked ? 'checked' : ''}`;
+                    row.onclick = () => {
+                        checklistState[item] = !checklistState[item];
+                        localStorage.setItem(CHECK_KEY, JSON.stringify(checklistState));
+                        renderChecklist();
+                    };
+                    row.innerHTML = `<div class="checkbox"><i class="fa-solid fa-check" style="font-size:0.8rem;"></i></div><span>${item}</span>`;
+                    card.appendChild(row);
+                });
+                container.appendChild(card);
+            }
+            const spacer = document.createElement('div');
+            spacer.style.height = '20px';
+            container.appendChild(spacer);
+        }
+    </script>
+</body>
+</html>
