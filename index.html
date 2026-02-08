@@ -459,108 +459,156 @@
     </div>
 
     <script>
-        // --- 景點資料庫 (包含介紹與交通) ---
+        // --- 景點資料庫 (完整補完版，確保每個行程都有對應資料) ---
         const places = {
-    // Day 1
-    'changi': {
-        title: '新加坡樟宜機場 (SIN)',
-        desc: '全球最佳機場，T2 有數位瀑布與空中花園。',
-        transit: '入境後跟隨 Taxi 指標前往 B1 接送區。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Changi+Airport+Singapore'
-    },
-    'hotel_rest': {
-        title: 'Amara Singapore (飯店)',
-        desc: '位於 Tanjong Pagar 的住宿點，交通便利。',
-        transit: 'Grab 叫車或步行至地鐵站。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Amara+Singapore+Hotel'
-    },
-    'jumbo': {
-        title: 'JUMBO Seafood (The Riverwalk)',
-        desc: '經典辣椒螃蟹名店。',
-        transit: '從飯店搭 Grab 約 10-12 分鐘。',
-        map: 'https://www.google.com/maps/search/?api=1&query=JUMBO+Seafood+The+Riverwalk'
-    },
-    'merlion': {
-        title: '魚尾獅公園 Merlion Park',
-        desc: '新加坡必拍地標。',
-        transit: '從珍寶海鮮步行約 10 分鐘即達。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Merlion+Park'
-    },
+            // Day 1
+            'changi': {
+                title: '新加坡樟宜機場 (SIN)',
+                desc: '全球最佳機場，T2 有數位瀑布與空中花園。',
+                transit: '入境後跟隨 Taxi 指標前往 B1 接送區。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Changi+Airport+Singapore'
+            },
+            'hotel_rest': {
+                title: 'Amara Singapore (飯店)',
+                desc: '位於 Tanjong Pagar 的住宿點，交通便利。',
+                transit: 'Grab 叫車或步行至地鐵站。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Amara+Singapore+Hotel'
+            },
+            'jumbo': {
+                title: 'JUMBO Seafood (The Riverwalk)',
+                desc: '經典辣椒螃蟹名店。',
+                transit: '從飯店搭 Grab 約 10-12 分鐘。',
+                map: 'https://www.google.com/maps/search/?api=1&query=JUMBO+Seafood+The+Riverwalk'
+            },
+            'merlion': {
+                title: '魚尾獅公園 Merlion Park',
+                desc: '新加坡必拍地標。',
+                transit: '從珍寶海鮮步行約 10 分鐘即達。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Merlion+Park'
+            },
 
-    // Day 2
-    'maxwell': {
-        title: 'Maxwell Food Centre',
-        desc: '天天海南雞飯與真真粥品。',
-        transit: '從飯店步行約 8 分鐘。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Maxwell+Food+Centre'
-    },
-    'chinatown': {
-        title: '新加坡佛牙寺龍華院',
-        desc: '唐代風格建築，有冷氣可休息。',
-        transit: '就在 Maxwell 對面。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Buddha+Tooth+Relic+Temple'
-    },
-    'songfa': {
-        title: '松發肉骨茶 (Chinatown Point)',
-        desc: '潮州式胡椒肉骨茶。',
-        transit: '地鐵牛車水站 E 出口旁。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Song+Fa+Bak+Kut+Teh+Chinatown+Point'
-    },
-    'gardens': {
-        title: '濱海灣花園 Gardens by the Bay',
-        desc: '雲霧林 Cloud Forest 與花穹 Flower Dome。',
-        transit: '搭地鐵藍線至 Bayfront 站。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Gardens+by+the+Bay'
-    },
-    'mbs': {
-        title: '金沙商場 The Shoppes at MBS',
-        desc: '精品購物與 Bacha Coffee。',
-        transit: '從花園通過空橋即達。',
-        map: 'https://www.google.com/maps/search/?api=1&query=The+Shoppes+at+Marina+Bay+Sands'
-    },
+            // Day 2
+            'maxwell': {
+                title: 'Maxwell Food Centre',
+                desc: '天天海南雞飯與真真粥品。',
+                transit: '從飯店步行約 8 分鐘。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Maxwell+Food+Centre'
+            },
+            'chinatown': {
+                title: '新加坡佛牙寺龍華院',
+                desc: '唐代風格建築，有冷氣可休息。',
+                transit: '就在 Maxwell 對面。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Buddha+Tooth+Relic+Temple'
+            },
+            'songfa': {
+                title: '松發肉骨茶 (Chinatown Point)',
+                desc: '潮州式胡椒肉骨茶。',
+                transit: '地鐵牛車水站 E 出口旁。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Song+Fa+Bak+Kut+Teh+Chinatown+Point'
+            },
+            'gardens': {
+                title: '濱海灣花園 Gardens by the Bay',
+                desc: '雲霧林 Cloud Forest 與花穹 Flower Dome。',
+                transit: '搭地鐵藍線至 Bayfront 站。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Gardens+by+the+Bay'
+            },
+            'mbs': {
+                title: '金沙商場 The Shoppes at MBS',
+                desc: '精品購物與 Bacha Coffee。',
+                transit: '從花園通過空橋即達。',
+                map: 'https://www.google.com/maps/search/?api=1&query=The+Shoppes+at+Marina+Bay+Sands'
+            },
+            'supertree': {
+                title: '天空樹燈光秀',
+                desc: 'Garden Rhapsody 燈光秀，躺在 Supertree Grove 下觀賞非常震撼。',
+                transit: '從金沙商場步行跨越 Dragonfly Bridge 即可抵達。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Supertree+Grove'
+            },
+            'laupasat': {
+                title: '老巴剎 Lau Pa Sat',
+                desc: '維多利亞風格美食中心，晚上的沙嗲街氣氛極佳。',
+                transit: '搭地鐵到 Downtown 站或 Telok Ayer 站。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Lau+Pa+Sat+Satay+Street'
+            },
 
-    // Day 3
-    'uss': {
-        title: '新加坡環球影城 USS',
-        desc: '聖淘沙熱門主題樂園。',
-        transit: 'Grab 直達地下 B1 接送區。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Universal+Studios+Singapore'
-    },
-    'dancing_crab': {
-        title: 'Dancing Crab (VivoCity)',
-        desc: '手抓海鮮除夕聚餐。',
-        transit: '從聖淘沙搭輕軌回 VivoCity 3 樓。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Dancing+Crab+VivoCity'
-    },
+            // Day 3
+            'uss': {
+                title: '新加坡環球影城 USS',
+                desc: '聖淘沙熱門主題樂園。',
+                transit: 'Grab 直達地下 B1 接送區。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Universal+Studios+Singapore'
+            },
+            'dancing_crab': {
+                title: 'Dancing Crab (VivoCity)',
+                desc: '手抓海鮮除夕聚餐。',
+                transit: '從聖淘沙搭輕軌回 VivoCity 3 樓。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Dancing+Crab+VivoCity'
+            },
 
-    // Day 4
-    'sea': {
-        title: 'S.E.A. 海洋館',
-        desc: '全球最大海洋館之一。',
-        transit: '聖淘沙名勝世界內，Grab 可直達。',
-        map: 'https://www.google.com/maps/search/?api=1&query=S.E.A.+Aquarium'
-    },
-    'rws_lunch': {
-        title: '馬來西亞美食街 (RWS)',
-        desc: '聖淘沙內的平價午餐選擇。',
-        transit: '海洋館出口步行即達。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Malaysian+Food+Street+RWS'
-    },
-    'chijmes': {
-        title: '贊美廣場 CHIJMES',
-        desc: '白色歌德式教堂建築，熱門拍照點。',
-        transit: '搭地鐵至 City Hall 站。',
-        map: 'https://www.google.com/maps/search/?api=1&query=CHIJMES'
-    },
+            // Day 4
+            'sea': {
+                title: 'S.E.A. 海洋館',
+                desc: '全球最大海洋館之一。',
+                transit: '聖淘沙名勝世界內，Grab 可直達。',
+                map: 'https://www.google.com/maps/search/?api=1&query=S.E.A.+Aquarium'
+            },
+            'rws_lunch': {
+                title: '馬來西亞美食街 (RWS)',
+                desc: '聖淘沙內的平價午餐選擇。',
+                transit: '海洋館出口步行即達。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Malaysian+Food+Street+RWS'
+            },
+            'chijmes': {
+                title: '贊美廣場 CHIJMES',
+                desc: '白色歌德式教堂建築，熱門拍照點。',
+                transit: '搭地鐵至 City Hall 站。',
+                map: 'https://www.google.com/maps/search/?api=1&query=CHIJMES'
+            },
+            'raffles': {
+                title: '萊佛士酒店 Raffles Hotel',
+                desc: '傳奇殖民風酒店，Long Bar 是新加坡司令發源地。',
+                transit: '從贊美廣場步行約 3 分鐘。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Raffles+Hotel+Singapore'
+            },
+            'flyer': {
+                title: '新加坡摩天輪 Singapore Flyer',
+                desc: '高空俯瞰濱海灣全景，轉一圈約 30 分鐘。',
+                transit: '建議從萊佛士酒店搭 Grab 前往。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Singapore+Flyer'
+            },
+            'korean': {
+                title: 'Tanjong Pagar 韓式料理街',
+                desc: '韓國城，有很多道地炸醬麵與韓式烤肉。',
+                transit: '就在妳住的飯店 (Amara) 附近。',
+                map: 'https://www.google.com/maps/search/?api=1&query=O.BBa+Jjajang+Tanjong+Pagar'
+            },
 
-    // Day 5
-    'jewel': {
-        title: '星耀樟宜 Jewel Changi',
-        desc: '雨漩渦瀑布 Rain Vortex。',
-        transit: '位於機場航廈核心區。',
-        map: 'https://www.google.com/maps/search/?api=1&query=Jewel+Changi+Airport'
-    }
-};
+            // Day 5 & 備選
+            'checkout': {
+                title: '退房前往機場',
+                desc: '整理行李，準備前往樟宜機場。',
+                transit: '建議直接用 Grab 叫車，車程約 20 分鐘。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Changi+Airport'
+            },
+            'jewel': {
+                title: '星耀樟宜 Jewel Changi',
+                desc: '雨漩渦瀑布 Rain Vortex。',
+                transit: '位於機場航廈核心區。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Jewel+Changi+Airport'
+            },
+            'yakun': {
+                title: '亞坤咖椰吐司 Ya Kun',
+                desc: '新加坡必吃早餐，炭烤吐司配半熟蛋與咖啡。',
+                transit: '分店眾多，牛車水或 VivoCity 皆有。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Ya+Kun+Kaya+Toast'
+            },
+            'jigger': {
+                title: 'Jigger & Pony',
+                desc: '亞洲 50 最佳酒吧之一，就在飯店 1 樓。',
+                transit: '就在妳住的 Amara Singapore 飯店內。',
+                map: 'https://www.google.com/maps/search/?api=1&query=Jigger+%26+Pony'
+            }
+        };
 
         // --- 功能邏輯 ---
         function openModal(id) {
