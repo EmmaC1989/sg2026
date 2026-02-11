@@ -399,14 +399,43 @@
                     <div class="tags-row"><span class="tag tag-alert">⚠️ 初一休息</span></div>
                 </div>
             </div>
-            <div class="it-item" onclick="openModal('jigger')">
-                <div class="it-time"><i class="fa-solid fa-martini-glass"></i></div>
-                <div class="it-body">
-                    <div class="it-title">Jigger & Pony</div>
-                    <div class="it-desc">飯店樓下亞洲 Top 50 酒吧</div>
-                    <div class="tags-row"><span class="tag tag-alert">需訂位</span></div>
-                </div>
+            <div class="it-item" onclick="openModal('fort_siloso')">
+            <div class="it-time"><i class="fa-solid fa-person-hiking"></i></div>
+            <div class="it-body">
+                <div class="it-title">西樂索天空步道</div>
+                <div class="it-desc">11層樓高步道 + 二戰砲台遺跡</div>
+                <div class="tags-row"><span class="tag tag-info">哥哥推薦</span><span class="tag tag-backup">免費</span></div>
             </div>
+        </div>
+        <div class="it-item" onclick="openModal('palawan_beach')">
+            <div class="it-time"><i class="fa-solid fa-umbrella-beach"></i></div>
+            <div class="it-body">
+                <div class="it-title">巴拉灣吊橋</div>
+                <div class="it-desc">亞洲大陸最南端觀景台</div>
+                <div class="tags-row"><span class="tag tag-info">紀念打卡</span></div>
+            </div>
+        </div>
+        <div class="it-item" onclick="openModal('fort_canning')">
+            <div class="it-time"><i class="fa-solid fa-camera"></i></div>
+            <div class="it-body">
+                <div class="it-title">福康寧公園樹洞</div>
+                <div class="it-desc">IG 夢幻拍照點 (樹洞隧道)</div>
+            </div>
+        </div>
+        <div class="it-item" onclick="openModal('police_station')">
+            <div class="it-time"><i class="fa-solid fa-rainbow"></i></div>
+            <div class="it-body">
+                <div class="it-title">舊禧街警察局</div>
+                <div class="it-desc">927 扇彩虹窗戶，就在珍寶海鮮附近</div>
+            </div>
+        </div>
+        <div class="it-item" onclick="openModal('helix_bridge')">
+            <div class="it-time"><i class="fa-solid fa-bridge"></i></div>
+            <div class="it-body">
+                <div class="it-title">雙螺旋橋</div>
+                <div class="it-desc">DNA 科幻燈光，拍金沙全景超美</div>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -615,8 +644,39 @@
                 desc: '亞洲 50 最佳酒吧之一，就在飯店 1 樓。',
                 transit: '就在妳住的 Amara Singapore 飯店內。',
                 map: 'https://www.google.com/maps/search/?api=1&query=Jigger+%26+Pony'
-            }
-        };
+            },
+            // --- 以下為新增的備選景點與正確 Map 連結 ---
+        'fort_siloso': {
+            title: '西樂索砲台天空步道',
+            desc: '11層樓高的天空步道，末端是二戰軍事遺跡「西樂索砲台」。',
+            transit: '搭乘聖淘沙海灘火車或 Grab 前往 Siloso Point。',
+            map: 'https://www.google.com/maps/search/?api=1&query=Fort+Siloso+Sky+Walk'
+        },
+        'palawan_beach': {
+            title: '巴拉灣海灘 (亞洲最南端)',
+            desc: '過吊橋抵達「亞洲大陸最南端」，有兩個觀景台可拍照。',
+            transit: '搭乘聖淘沙海灘火車至 Palawan Beach 站。',
+            map: 'https://www.google.com/maps/search/?api=1&query=Palawan+Beach+Southernmost+Point'
+        },
+        'fort_canning': {
+            title: '福康寧公園 (神秘樹洞)',
+            desc: 'IG 爆紅「神秘樹洞 (Tree Tunnel)」，由下往上拍非常夢幻。',
+            transit: '地鐵 Fort Canning 站 B 出口步行 5 分鐘。',
+            map: 'https://www.google.com/maps/search/?api=1&query=Fort+Canning+Tree+Tunnel'
+        },
+        'police_station': {
+            title: '舊禧街警察局 (彩虹窗)',
+            desc: '927 扇繽紛彩虹窗戶，就在珍寶海鮮附近，路過必拍。',
+            transit: '從珍寶海鮮步行 2 分鐘，對面即可看到。',
+            map: 'https://www.google.com/maps/search/?api=1&query=Old+Hill+Street+Police+Station'
+        },
+        'helix_bridge': {
+            title: '雙螺旋橋 Helix Bridge',
+            desc: 'DNA 結構設計的景觀橋，晚上的燈光非常科幻。',
+            transit: '連接金沙商場與濱海中心（往摩天輪方向）。',
+            map: 'https://www.google.com/maps/search/?api=1&query=The+Helix+Bridge'
+        },
+    };
 
         // --- 功能邏輯 ---
         function openModal(id) {
@@ -643,9 +703,9 @@
         const checkData = {
             "🪪 證件": ["護照", "SG Arrival Card", "網卡/漫遊", "信用卡 (高回饋)", "新幣現金"],
             "🛡 保險": ["旅遊平安險", "海外突發疾病醫療險", "不便險 (航班延誤)"], // 新增項目
-            "👕 衣物": ["薄外套 (冷氣房)", "好走的鞋", "夏裝 x4", "泳衣", "遮陽帽"],
+            "👕 衣物": ["薄外套 (冷氣房)", "好走的鞋", "夏裝 x4", "雨傘", "遮陽帽", "太陽眼鏡"],
             "🔌 電子": ["英式轉接頭", "行動電源", "充電線", "腳架/自拍棒"],
-            "💊 藥品": ["腸胃藥", "止痛藥", "暈車藥", "OK繃"]
+            "💊 藥品": ["腸胃藥", "止痛藥", "暈車藥", "OK繃", "防蚊噴霧"]
         };
 
         window.onload = function() {
